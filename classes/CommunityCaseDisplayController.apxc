@@ -1,0 +1,52 @@
+public with sharing class CreateCaseController {
+    @AuraEnabled
+    public static List<String> getProfilOptions() {
+        return new List<String>{' ','Professionnel non client', 'Client Allaw Pro'};
+    }
+
+    @AuraEnabled
+    public static List<String> getObjetOptions(String profil) {
+        List<String> objetOptions = new List<String>();
+        if (profil == 'Professionnel non client') {
+            objetOptions.addAll(new List<String>{' '
+                'Je souhaite participer au prochain Webinaire de présentation',
+                'Je souhaite être recontacté pour en savoir plus',
+                'Je souhaite m’inscrire mais je n’y arrive pas',
+                'Je suis client mais je n’arrive pas à me connecter',
+                'Je souhaite que ma fiche de profil soit retirée',
+                'Je souhaite en savoir plus sur la sécurité des données',
+                'Je ne souhaite plus recevoir de mailing et sollicitation',
+                'Autre'
+            });
+        } else if (profil == 'Client Allaw Pro') {
+            objetOptions.addAll(new List<String>{' '
+                'Je n’arrive pas à créer un compte collaborateur',
+                'Comment me rendre indisponible ?',
+                'Comment confimer, refuser un rendez-vous ?',
+                'Je souhaite modifier les accès pour mon/mes collaborateurs',
+                'Je ne reçois pas de RDV via Allaw',
+                'Je souhaite être accompagné pour paramétrer/modifier mon paiement',
+                'Comment supprimer des collaborateurs de mon compte Allaw Pro ?',
+                'Je souhaite être accompagné pour paramétrer/modifier mon profil',
+                'Je souhaite supprimer mon compte',
+                'Pourquoi mon agenda en ligne n’est plus connecté ? Comment le reconnecter sur Allaw Pro ?',
+                'Je ne souhaite plus recevoir de newsletter',
+                'Comment fixer un rendez-vous à partir de la fiche client sur Allaw Pro ?',
+                'Autre'
+            });
+        }
+        return objetOptions;
+    }
+
+    @AuraEnabled
+    public static Id createCaseRecord(Case caseObj) {
+        try {
+            caseObj.Origin = 'Formulaire Web';
+            insert caseObj;
+            return caseObj.Id;
+        } catch (Exception e) {
+            throw new AuraHandledException('Failed to create case: ' + e.getMessage());
+        }
+    }
+    
+}

@@ -1,0 +1,74 @@
+@isTest
+public class CreateCaseControllerTest {
+    
+    @isTest
+    static void testGetProfilOptions() {
+        // Call the getProfilOptions method
+        List<String> profilOptions = CreateCaseController.getProfilOptions();
+        
+        // Verify that the method returns the expected list of profil options
+        List<String> expectedOptions = new List<String>{' ','Professionnel non client', 'Client Allaw Pro'};
+        System.assertEquals(expectedOptions, profilOptions, 'Profil options mismatch');
+    }
+    
+    @isTest
+    static void testGetObjetOptions_ProfessionnelNonClient() {
+        // Call the getObjetOptions method for 'Professionnel non client'
+        List<String> objetOptions = CreateCaseController.getObjetOptions('Professionnel non client');
+        
+        // Verify that the method returns the expected list of objet options
+        List<String> expectedOptions = new List<String>{' ',
+            'Je souhaite participer au prochain Webinaire de présentation',
+            'Je souhaite être recontacté pour en savoir plus',
+            'Je souhaite m’inscrire mais je n’y arrive pas',
+            'Je suis client mais je n’arrive pas à me connecter',
+            'Je souhaite que ma fiche de profil soit retirée',
+            'Je souhaite en savoir plus sur la sécurité des données',
+            'Je ne souhaite plus recevoir de mailing et sollicitation',
+            'Autre'
+        };
+        System.assertEquals(expectedOptions, objetOptions, 'Objet options mismatch for Professionnel non client');
+    }
+    
+    @isTest
+    static void testGetObjetOptions_ClientAllawPro() {
+        // Call the getObjetOptions method for 'Client Allaw Pro'
+        List<String> objetOptions = CreateCaseController.getObjetOptions('Client Allaw Pro');
+        
+        // Verify that the method returns the expected list of objet options
+        List<String> expectedOptions = new List<String>{' ',
+            'Je n’arrive pas à créer un compte collaborateur',
+            'Comment me rendre indisponible ?',
+            'Comment confimer, refuser un rendez-vous ?',
+            'Je souhaite modifier les accès pour mon/mes collaborateurs',
+            'Je ne reçois pas de RDV via Allaw',
+            'Je souhaite être accompagné pour paramétrer/modifier mon paiement',
+            'Comment supprimer des collaborateurs de mon compte Allaw Pro ?',
+            'Je souhaite être accompagné pour paramétrer/modifier mon profil',
+            'Je souhaite supprimer mon compte',
+            'Pourquoi mon agenda en ligne n’est plus connecté ? Comment le reconnecter sur Allaw Pro ?',
+            'Je ne souhaite plus recevoir de newsletter',
+            'Comment fixer un rendez-vous à partir de la fiche client sur Allaw Pro ?',
+            'Autre'
+        };
+        System.assertEquals(expectedOptions, objetOptions, 'Objet options mismatch for Client Allaw Pro');
+    }
+    
+    @isTest
+    static void testCreateCaseRecord() {
+        // Create a test Case object
+        Case testCase = new Case(Subject = 'Test Subject', Description = 'Test Description');
+        
+        // Call the createCaseRecord method
+        Test.startTest();
+        Id caseId = CreateCaseController.createCaseRecord(testCase);
+        Test.stopTest();
+        
+        // Verify that the method creates a Case record
+        System.assertNotEquals(null, caseId, 'Case creation failed');
+        
+        // Verify that the Origin field is set to 'Formulaire Web'
+        Case insertedCase = [SELECT Origin FROM Case WHERE Id = :caseId LIMIT 1];
+        System.assertEquals('Formulaire Web', insertedCase.Origin, 'Incorrect Origin value');
+    }
+}

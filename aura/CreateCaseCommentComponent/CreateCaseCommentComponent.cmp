@@ -1,33 +1,57 @@
-<aura:component controller="CommunityCaseDisplayController" implements="force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
-    <aura:attribute name="HideMe" type="Aura.Action" default="{!c.closePopup}"/> 
-    <aura:attribute name="newComment" type="String"/>
-    
-    <div role="dialog" aura:id="modelDiv" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-hide">
-      <div class="slds-modal__container">
-        <!-- ###### MODAL BOX HEADER Part Start From Here ######-->
-        <div class="slds-modal__header">
-            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!v.HideMe}">
-                X
-                <span class="slds-assistive-text">Close</span>
-            </button> 
-        </div>
-        
-        <!--###### MODAL BOX BODY Part Start From Here ######-->
-        <div class="slds-modal__content">
-    	<lightning:card title="New Comment" iconName="standard:custom">
-        <p class="slds-p-horizontal_small"> 
-            <!-- Display the form -->
-             <lightning:textarea aura:id="commentField" name="CommentBody" label="limit to 1200 characters" class="cmtText"
-                              maxlength="1200" messageWhenTooLong="Max character limit exceeded."                     
-                              value="{!v.newComment}" required="true"/>
-                
-            <lightning:button label="Cancel" onclick="{!v.HideMe}" class="slds-m-top_medium" />
-            <lightning:button label="Add" onclick="{!c.handleAddComment}"
-                       variant="brand" class="slds-m-top_medium"/>
-        </p>
-        </lightning:card>    
-        </div>
-      </div>
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes" controller="CreateCaseController">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <!-- Attributes -->
+    <aura:attribute name="caseRecord" type="Case" default="{ 'sobjectType': 'Case', 'Subject': '', 'Description': '', 'Profil__c': '', 'Objet__c': '' ,'Name': '', 'Email': '', 'Phone': ''}"/>
+    <aura:attribute name="profilOptions" type="List" default="[]"/>
+    <aura:attribute name="objetOptions" type="List" default="[]"/>
+
+    <div class="slds-m-around_medium">
+        <lightning:card title="Contactez nous" class="slds-text-align_left">
+            <lightning:layout multipleRows="true">
+                <!-- Nom Field -->
+                <lightning:layoutItem flexibility="auto" padding="around-small" size="12">
+                    <lightning:input label="Nom et prénom" value="{!v.caseRecord.SuppliedName}" required="true" class="slds-p-bottom_small"/>
+                </lightning:layoutItem>
+
+                <!-- E-mail Field -->
+                <lightning:layoutItem flexibility="auto" padding="around-small" size="12">
+                    <lightning:input label="E-mail" type="email" value="{!v.caseRecord.SuppliedEmail}" required="true" class="slds-p-bottom_small"/>
+                </lightning:layoutItem>
+
+                <!-- Téléphone Field -->
+                <lightning:layoutItem flexibility="auto" padding="around-small" size="12">
+                    <lightning:input label="Téléphone" type="tel" value="{!v.caseRecord.SuppliedPhone}" required="false" class="slds-p-bottom_small"/>
+                </lightning:layoutItem>
+
+                <!-- Profil Field -->
+                <lightning:layoutItem flexibility="auto" padding="around-small" size="12">
+                    <lightning:select label="Profil" value="{!v.caseRecord.Profil__c}" required="true" onchange="{!c.handleProfilChange}" class="slds-p-bottom_small">
+                        <aura:iteration items="{!v.profilOptions}" var="option">
+                            <option value="{!option}">{!option}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                </lightning:layoutItem>
+
+                <!-- Objet Field -->
+                <lightning:layoutItem flexibility="auto" padding="around-small" size="12">
+                    <lightning:select label="Objet" value="{!v.caseRecord.Objet__c}" required="true" class="slds-p-bottom_small">
+                        <aura:iteration items="{!v.objetOptions}" var="option">
+                            <option value="{!option}">{!option}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                </lightning:layoutItem>
+
+                <!-- Description Field -->
+                <lightning:layoutItem flexibility="auto" padding="around-small" size="12">
+                    <lightning:textarea label="Description" value="{!v.caseRecord.Description}" required="true" class="slds-p-bottom_small"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+
+            <!-- Create Button -->
+            <div class="slds-m-top_medium slds-align_absolute-center">
+                <lightning:button label="Soumettre" onclick="{!c.createCase}" variant="brand"/>
+            </div>
+        </lightning:card>
     </div>
-    <div aura:id="backGroundSectionId" class="slds-backdrop slds-backdrop--close"></div>    
 </aura:component>
